@@ -11,6 +11,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
 # Create your views here.
+#I have created API Views by using DRF
 @api_view(['GET','POST','PUT','PATCH','DELETE'])
 def api(request,pk=None):
     if request.method=="GET":
