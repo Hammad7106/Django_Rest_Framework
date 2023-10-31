@@ -9,77 +9,113 @@ from django.views.decorators.csrf import csrf_exempt
 import io
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin,CreateModelMixin,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin
+
+class Student_List_Create(GenericAPIView, ListModelMixin,CreateModelMixin):
+    queryset = Student.objects.all()
+    serializer_class = Student_Serielizer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class Student_Retrieve_Update_Destroy(GenericAPIView, RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
+    queryset = Student.objects.all()
+    serializer_class = Student_Serielizer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+
 
 # Create your views here.
 #I have created API Views by using DRF
-@api_view(['GET','POST','PUT','PATCH','DELETE'])
-def api(request,pk=None):
-    if request.method=="GET":
-        id=pk
-        if id is not None:
-            stu=Student.objects.get(id=id)
-            serielizer=Student_Serielizer(stu)
-            return Response(serielizer.data)
-
-        stu=Student.objects.all()
-        serielizer=Student_Serielizer(stu,many=True)
-        return Response(serielizer.data)
-
-    if request.method=="POST":
-        serielizer=Student_Serielizer(data=request.data)
-        if serielizer.is_valid():
-            serielizer.save()
-            return Response({'msg':'Data Created'})
-
-        return Response(serielizer.errors)
-
-    if request.method=="PUT":
-        id=pk
-        stu=Student.objects.get(pk=id)
-        serielizer=Student_Serielizer(stu,data=request.data)
-        if serielizer.is_valid():
-            serielizer.save()
-            return Response({'msg':'Data Updated'})
-
-        return Response(serielizer.errors)
-
-    if request.method=="PATCH":
-        id=pk
-        stu=Student.objects.get(pk=id)
-        serielizer=Student_Serielizer(stu,data=request.data,partial=True)
-        if serielizer.is_valid():
-            serielizer.save()
-            return Response({'msg':'PATCH Data Updated'})
-
-        return Response(serielizer.errors)
-
-    if request.method=="DELETE":
-        id=pk
-        stu=Student.objects.get(pk=id)
-        stu.delete()
-        return Response({'msg':'Data Deleted'})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def student_list(request):
-    get_data=Student.objects.all()
-    serielized_data=Student_Serielizer(get_data,many=True)
-    return JsonResponse(serielized_data.data,safe=False)
-
+# @api_view(['GET','POST','PUT','PATCH','DELETE'])
+# def api(request,pk=None):
+#     if request.method=="GET":
+#         id=pk
+#         if id is not None:
+#             stu=Student.objects.get(id=id)
+#             serielizer=Student_Serielizer(stu)
+#             return Response(serielizer.data)
+#
+#         stu=Student.objects.all()
+#         serielizer=Student_Serielizer(stu,many=True)
+#         return Response(serielizer.data)
+#
+#     if request.method=="POST":
+#         serielizer=Student_Serielizer(data=request.data)
+#         if serielizer.is_valid():
+#             serielizer.save()
+#             return Response({'msg':'Data Created'})
+#
+#         return Response(serielizer.errors)
+#
+#     if request.method=="PUT":
+#         id=pk
+#         stu=Student.objects.get(pk=id)
+#         serielizer=Student_Serielizer(stu,data=request.data)
+#         if serielizer.is_valid():
+#             serielizer.save()
+#             return Response({'msg':'Data Updated'})
+#
+#         return Response(serielizer.errors)
+#
+#     if request.method=="PATCH":
+#         id=pk
+#         stu=Student.objects.get(pk=id)
+#         serielizer=Student_Serielizer(stu,data=request.data,partial=True)
+#         if serielizer.is_valid():
+#             serielizer.save()
+#             return Response({'msg':'PATCH Data Updated'})
+#
+#         return Response(serielizer.errors)
+#
+#     if request.method=="DELETE":
+#         id=pk
+#         stu=Student.objects.get(pk=id)
+#         stu.delete()
+#         return Response({'msg':'Data Deleted'})
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# def student_list(request):
+#     get_data=Student.objects.all()
+#     serielized_data=Student_Serielizer(get_data,many=True)
+#     return JsonResponse(serielized_data.data,safe=False)
+#
 
 
 
