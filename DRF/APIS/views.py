@@ -11,15 +11,73 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.generics import GenericAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin,CreateModelMixin,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin
+from rest_framework import viewsets
+from rest_framework import status
+
+class Student_ViewSet(viewsets.ViewSet):
+    def list(self,request):
+        stu=Student.objects.all()
+        serializer=Student_Serielizer(stu,many=True)
+        return Response(serializer.data)
+
+    def retrieve(self,request,pk):
+        id=pk
+        if id is not None:
+            stu=Student.objects.get(id=id)
+            serializer=Student_Serielizer(stu)
+            return Response(serializer.data)
+
+    def create(self,request):
+        serializer=Student_Serielizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'Data Created'},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
-class List_Create(ListCreateAPIView):
-    queryset = Student.objects.all()
-    serializer_class = Student_Serielizer
+    def update(self,request,pk):
+        id=pk
+        stu=Student.objects.get(pk=id)
+        serializer=Student_Serielizer(stu,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'Complete Data Updated'})
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class RetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
-    queryset = Student.objects.all()
-    serializer_class = Student_Serielizer
+
+    def partial_update(self,request,pk):
+        id=pk
+        stu=Student.objects.get(pk=id)
+        serializer=Student_Serielizer(stu,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'Partial Data Updated'})
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self,request,pk):
+        id=pk
+        stu=Student.objects.get(pk=id)
+        stu.delete()
+        return Response({'msg':'Data Deleted'})
+
+
+
+
+
+
+
+
+
+
+
+# class List_Create(ListCreateAPIView):
+#     queryset = Student.objects.all()
+#     serializer_class = Student_Serielizer
+#
+# class RetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+#     queryset = Student.objects.all()
+#     serializer_class = Student_Serielizer
 
 
 
